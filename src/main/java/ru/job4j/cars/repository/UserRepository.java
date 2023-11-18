@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import ru.job4j.cars.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -77,11 +78,13 @@ public class UserRepository {
      */
     public List<User> findAllOrderById() {
         Session session = sf.openSession();
-        List<User> result;
+        List<User> result = new ArrayList<>();
         try {
             session.beginTransaction();
             result = session.createQuery("FROM User u ORDER BY u.id", User.class).list();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
         } finally {
             session.close();
         }
@@ -99,6 +102,8 @@ public class UserRepository {
             session.beginTransaction();
             result = session.get(User.class, userId);
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
         } finally {
             session.close();
         }
@@ -112,13 +117,15 @@ public class UserRepository {
      */
     public List<User> findByLikeLogin(String key) {
         Session session = sf.openSession();
-        List<User> result;
+        List<User> result = new ArrayList<>();
         try {
             session.beginTransaction();
             result = session.createQuery("FROM User WHERE login LIKE :fKey", User.class)
                     .setParameter("fKey", "%" + key + "%")
                     .list();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
         } finally {
             session.close();
         }
@@ -132,13 +139,15 @@ public class UserRepository {
      */
     public Optional<User> findByLogin(String login) {
         Session session = sf.openSession();
-        Optional<User> result = Optional.of(new User());
+        Optional<User> result = Optional.empty();
         try {
             session.beginTransaction();
             result = session.createQuery("FROM User WHERE login = :fLogin", User.class)
                     .setParameter("fLogin", login)
                     .uniqueResultOptional();
             session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
         } finally {
             session.close();
         }
