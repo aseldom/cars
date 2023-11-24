@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -22,5 +23,6 @@ public class PriceHistory {
     private int id;
     private Long before;
     private Long after;
-    private Timestamp startTime;
+    @Column(name = "created")
+    private Timestamp startTime = Timestamp.valueOf(LocalDateTime.now());
 }
