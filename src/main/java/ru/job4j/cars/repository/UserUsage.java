@@ -13,7 +13,7 @@ public class UserUsage {
         try (SessionFactory sf = new MetadataSources(registry)
                 .buildMetadata().buildSessionFactory()) {
             CrudRepository crudRepository = new CrudRepository(sf);
-            var userRepository = new UserRepository(crudRepository);
+            var userRepository = new HibernateUserRepository(crudRepository);
             var user = new User();
             user.setLogin("admin");
             user.setPassword("admin");

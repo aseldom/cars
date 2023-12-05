@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Data
 @AllArgsConstructor
@@ -21,8 +22,11 @@ public class PriceHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
+
     private Long before;
+
     private Long after;
+
     @Column(name = "created")
-    private Timestamp startTime = Timestamp.valueOf(LocalDateTime.now());
+    private Timestamp startTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 }
