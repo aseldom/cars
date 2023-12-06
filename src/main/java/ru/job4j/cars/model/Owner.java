@@ -16,9 +16,9 @@ public class Owner {
     @EqualsAndHashCode.Include
     private int id;
 
-    String name;
+    private String name;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    User user;
+    private User user;
 }

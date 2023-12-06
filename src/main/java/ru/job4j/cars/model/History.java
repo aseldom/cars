@@ -4,17 +4,21 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
-@Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "engine")
-public class Engine {
+@Table(name = "history")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Data
+public class History {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
 
-    private String name;
+    Timestamp startAt;
+
+    Timestamp endAt;
+
 }
