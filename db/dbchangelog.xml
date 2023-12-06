@@ -21,5 +21,7 @@
     <include file="scripts/018_ddl_insert_car_id_column_auto_post_table.sql" relativeToChangelogFile="true"/>
     <include file="scripts/019_ddl_alter_car_table_add_owner_id_column.sql" relativeToChangelogFile="true"/>
     <include file="scripts/020_ddl_alter_car_table_add_history_id_column.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/021_ddl_create_photo_table.sql" relativeToChangelogFile="true"/>
+    <include file="scripts/022_ddl_alter_photo_table_add_auto_post_id_column.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
