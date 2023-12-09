@@ -17,7 +17,7 @@ public class UserUsage {
             var user = new User();
             user.setLogin("admin");
             user.setPassword("admin");
-            userRepository.create(user);
+            userRepository.add(user);
             userRepository.findAllOrderById()
                     .forEach(System.out::println);
             userRepository.findByLikeLogin("ad")

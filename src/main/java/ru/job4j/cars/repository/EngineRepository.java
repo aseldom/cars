@@ -7,6 +7,12 @@ import java.util.Optional;
 
 public interface EngineRepository {
 
+    Optional<Engine> add(Engine engine);
+
+    Optional<Engine> update(Engine engine);
+
+    boolean deleteById(int id);
+
     Optional<Engine> findById(int id);
 
     Collection<Engine> findAll();

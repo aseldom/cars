@@ -13,6 +13,7 @@ import java.util.function.Function;
 
 @AllArgsConstructor
 public class CrudRepository {
+
     private final SessionFactory sf;
 
     public void run(Consumer<Session> command) {
@@ -33,6 +34,18 @@ public class CrudRepository {
             sq.executeUpdate();
         };
         run(command);
+    }
+
+    public int runWithConfirm(String query, Map<String, Object> args) {
+        Function<Session, Integer> command = session -> {
+            var sq = session
+                    .createQuery(query);
+            for (Map.Entry<String, Object> arg : args.entrySet()) {
+                sq.setParameter(arg.getKey(), arg.getValue());
+            }
+            return sq.executeUpdate();
+        };
+        return tx(command);
     }
 
     public <T> Optional<T> optional(String query, Class<T> cl, Map<String, Object> args) {

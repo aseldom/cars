@@ -4,13 +4,24 @@ import ru.job4j.cars.model.Car;
 import ru.job4j.cars.model.Post;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface PostRepository {
 
-    Collection<Post> getLastDay();
+    Optional<Post> add(Post post);
 
-    Collection<Post> getWithPhoto();
+    Optional<Post> update(Post post);
 
-    Collection<Car> getByModel(String model);
+    boolean deleteById(int id);
+
+    Optional<Post> findById(int id);
+
+    Collection<Post> findAll();
+
+    Collection<Post> findLastDay();
+
+    Collection<Post> findWithPhoto();
+
+    Collection<Car> findByModel(String model);
 
 }

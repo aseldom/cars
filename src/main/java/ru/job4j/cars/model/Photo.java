@@ -2,15 +2,12 @@ package ru.job4j.cars.model;
 
 import lombok.*;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Setter
-@Getter
+@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Entity
+@Table(name = "photo")
 public class Photo {
 
     @Id

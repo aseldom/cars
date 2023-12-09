@@ -15,6 +15,27 @@ public class HibernateEngineRepository implements EngineRepository {
     private final CrudRepository crudRepository;
 
     @Override
+    public Optional<Engine> add(Engine engine) {
+        crudRepository.run(session -> session.persist(engine));
+        return Optional.of(engine);
+    }
+
+    @Override
+    public Optional<Engine> update(Engine engine) {
+        crudRepository.run(session -> session.merge(engine));
+        return Optional.of(engine);
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        int res = crudRepository.runWithConfirm(
+                "DELETE from Engine WHERE id = :fId",
+                Map.of("fId", id)
+        );
+        return res != 0;
+    }
+
+    @Override
     public Optional<Engine> findById(int id) {
         return crudRepository.optional("FROM Engine e WHERE e.id = :fId",
                 Engine.class,

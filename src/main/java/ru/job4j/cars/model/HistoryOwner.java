@@ -7,15 +7,23 @@ import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "history")
+@Table(name = "history_owner")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Data
-public class History {
+public class HistoryOwner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "car_id")
+    Car car;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    Owner owner;
 
     Timestamp startAt;
 

@@ -15,6 +15,27 @@ public class HibernateCarRepository implements CarRepository {
     private final CrudRepository crudRepository;
 
     @Override
+    public Optional<Car> add(Car car) {
+        crudRepository.run(session -> session.persist(car));
+        return Optional.of(car);
+    }
+
+    @Override
+    public Optional<Car> update(Car car) {
+        crudRepository.run(session -> session.merge(car));
+        return Optional.of(car);
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        int res = crudRepository.runWithConfirm(
+                "DELETE FROM Car WHERE id = :fId",
+                Map.of("fId", id)
+        );
+        return res != 0;
+    }
+
+    @Override
     public Optional<Car> findById(int id) {
         return crudRepository.optional("FROM Car c WHERE c.id = :fId",
                 Car.class,

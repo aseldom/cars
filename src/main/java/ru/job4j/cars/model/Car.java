@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -28,12 +27,8 @@ public class Car {
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "history_owner",
-            joinColumns = {
-            @JoinColumn(name = "car_id", nullable = false, updatable = false)},
-            inverseJoinColumns = {
-            @JoinColumn(name = "owner_id", nullable = false, updatable = false)})
-    private Set<Owner> historyOwner = new HashSet<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "car_id")
+    Set<HistoryOwner> historyOwner;
 
 }

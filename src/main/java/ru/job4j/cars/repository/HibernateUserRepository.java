@@ -19,34 +19,42 @@ public class HibernateUserRepository implements UserRepository {
      * @param user пользователь.
      * @return пользователь с id.
      */
-    public User create(User user) {
+    @Override
+    public Optional<User> add(User user) {
         crudRepository.run(session -> session.persist(user));
-        return user;
+        return Optional.of(user);
     }
 
     /**
      * Обновить в базе пользователя.
      * @param user пользователь.
+     * @return пользователь с id.
      */
-    public void update(User user) {
+    @Override
+    public Optional<User> update(User user) {
         crudRepository.run(session -> session.merge(user));
+        return Optional.of(user);
     }
 
     /**
      * Удалить пользователя по id.
      * @param userId ID
+     * @return результат удаления
      */
-    public void delete(int userId) {
-        crudRepository.run(
+    @Override
+    public boolean delete(int userId) {
+        int res = crudRepository.runWithConfirm(
                 "delete from User where id = :fId",
                 Map.of("fId", userId)
         );
+        return res != 0;
     }
 
     /**
      * Список пользователь отсортированных по id.
      * @return список пользователей.
      */
+    @Override
     public List<User> findAllOrderById() {
         return crudRepository.query("from User order by id asc", User.class);
     }
@@ -55,9 +63,10 @@ public class HibernateUserRepository implements UserRepository {
      * Найти пользователя по ID
      * @return пользователь.
      */
+    @Override
     public Optional<User> findById(int userId) {
         return crudRepository.optional(
-                "from User where id = :fId", User.class,
+                "from User u where u.id = :fId", User.class,
                 Map.of("fId", userId)
         );
     }
@@ -67,6 +76,7 @@ public class HibernateUserRepository implements UserRepository {
      * @param key key
      * @return список пользователей.
      */
+    @Override
     public List<User> findByLikeLogin(String key) {
         return crudRepository.query(
                 "from User where login like :fKey", User.class,
@@ -79,6 +89,7 @@ public class HibernateUserRepository implements UserRepository {
      * @param login login.
      * @return Optional or user.
      */
+    @Override
     public Optional<User> findByLogin(String login) {
         return crudRepository.optional(
                 "from User where login = :fLogin", User.class,
