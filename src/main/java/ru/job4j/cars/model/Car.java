@@ -23,10 +23,6 @@ public class Car {
     @JoinColumn(name = "engine_id", foreignKey = @ForeignKey(name = "ENGINE_ID_FK"))
     private Engine engine;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
-
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id")
     private Set<HistoryOwner> historyOwners;
