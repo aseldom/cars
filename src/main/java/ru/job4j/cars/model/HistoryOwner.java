@@ -19,14 +19,14 @@ public class HistoryOwner {
 
     @ManyToOne
     @JoinColumn(name = "car_id")
-    Car car;
+    private Car car;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    Owner owner;
+    private Owner owner;
 
-    Timestamp startAt;
+    private Timestamp startAt;
 
-    Timestamp endAt;
+    private Timestamp endAt;
 
 }

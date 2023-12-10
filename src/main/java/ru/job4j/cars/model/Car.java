@@ -29,6 +29,6 @@ public class Car {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id")
-    Set<HistoryOwner> historyOwner;
+    private Set<HistoryOwner> historyOwners;
 
 }
