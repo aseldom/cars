@@ -6,10 +6,10 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
+@Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "history_owner")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@Data
 public class HistoryOwner {
 
     @Id

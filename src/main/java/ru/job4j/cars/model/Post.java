@@ -22,6 +22,7 @@ public class Post {
     private int id;
 
     private String description;
+
     @Column(name = "start_time")
     private Timestamp startTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 

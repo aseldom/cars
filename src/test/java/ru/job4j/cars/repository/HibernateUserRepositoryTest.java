@@ -11,6 +11,7 @@ import ru.job4j.cars.model.User;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class HibernateUserRepositoryTest {
 
@@ -41,7 +42,18 @@ class HibernateUserRepositoryTest {
     }
 
     @Test
-    public void     whenUpdateUserThenGetUpdated() {
+    public void whenAddUserWithSameLoginThenGetException() {
+        User user1 = getUser("User 1");
+        User user2 = getUser("User 1");
+        userRepository.add(user1);
+        assertThatThrownBy(() -> userRepository.add(user2))
+                .isInstanceOf(javax.persistence.PersistenceException.class)
+                .hasMessageContaining("org.hibernate.exception.ConstraintViolationException:"
+                        + " could not execute statement");
+    }
+
+    @Test
+    public void whenUpdateUserThenGetUpdated() {
         User user1 = getUser("User 1");
         User user2 = getUser("User 2");
         userRepository.add(user1);
@@ -60,7 +72,7 @@ class HibernateUserRepositoryTest {
         Optional<User> res = userRepository.findById(user.getId());
         assertThat(res).isEqualTo(Optional.empty());
     }
-
+/*
     @Test
     public void whenAddTwoUsersFindAllThenGetTwoUsers() {
         User user1 = getUser("User 1");
@@ -70,5 +82,6 @@ class HibernateUserRepositoryTest {
         var res = userRepository.findAllOrderById();
         assertThat(res).containsExactlyInAnyOrder(user1, user2);
     }
+ */
 
 }

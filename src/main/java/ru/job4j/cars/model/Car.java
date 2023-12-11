@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -25,6 +26,6 @@ public class Car {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "car_id")
-    private Set<HistoryOwner> historyOwners;
+    private Set<HistoryOwner> historyOwners = new HashSet<>();
 
 }
