@@ -8,6 +8,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import ru.job4j.cars.model.User;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -72,7 +73,40 @@ class HibernateUserRepositoryTest {
         Optional<User> res = userRepository.findById(user.getId());
         assertThat(res).isEqualTo(Optional.empty());
     }
-/*
+
+    @Test
+    public void whenFindByLoginThenGetUserWithThatLogin() {
+        User user = getUser("User 1");
+        userRepository.add(user);
+        String res = userRepository.findByLogin(user.getLogin()).get().getLogin();
+        assertThat(res).isEqualTo(user.getLogin());
+    }
+
+    @Test
+    public void whenFindByFakeLoginThenGetEmpty() {
+        User user = getUser("User 1");
+        userRepository.add(user);
+        String fakeLogin = user.getLogin() + "fake";
+        Optional<User> res = userRepository.findByLogin(fakeLogin);
+        assertThat(res).isEmpty();
+    }
+
+    @Test
+    public void whenFindByLikeLoginThenGetUsers() {
+        User user1 = getUser("User 1");
+        User user2 = getUser("User 2");
+        User user3 = getUser("BCA");
+        userRepository.add(user1);
+        userRepository.add(user2);
+        userRepository.add(user3);
+        String searchLogin = user1.getLogin().substring(0, 4);
+        List<User> res = userRepository.findByLikeLogin(searchLogin);
+        assertThat(res).containsExactly(user1, user2);
+        assertThat(res.get(0).getLogin()).isEqualTo(user1.getLogin());
+        assertThat(res.get(1).getLogin()).isEqualTo(user2.getLogin());
+        assertThat(res.size()).isEqualTo(2);
+    }
+
     @Test
     public void whenAddTwoUsersFindAllThenGetTwoUsers() {
         User user1 = getUser("User 1");
@@ -80,8 +114,8 @@ class HibernateUserRepositoryTest {
         userRepository.add(user1);
         userRepository.add(user2);
         var res = userRepository.findAllOrderById();
-        assertThat(res).containsExactlyInAnyOrder(user1, user2);
+        assertThat(res.get(0).getLogin()).isEqualTo(user1.getLogin());
+        assertThat(res.get(1).getLogin()).isEqualTo(user2.getLogin());
     }
- */
 
 }
