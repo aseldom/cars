@@ -25,4 +25,9 @@ public class PriceHistory {
 
     @Column(name = "created")
     private Timestamp startTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+
+    @ManyToOne
+    @JoinColumn(name = "auto_post_id")
+    private Post post;
+
 }

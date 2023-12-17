@@ -1,9 +1,5 @@
 package ru.job4j.cars.repository;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import ru.job4j.cars.model.Owner;
@@ -15,71 +11,55 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class HibernateOwnerRepositoryTest {
 
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
-    private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-    private final HibernateOwnerRepository ownerRepository = new HibernateOwnerRepository(new CrudRepository(sf));
-    private final HibernateUserRepository userRepository = new HibernateUserRepository(new CrudRepository(sf));
+    private final Util util = new Util();
 
     @AfterEach
     public void clearRepository() {
-        for (var e : ownerRepository.findAll()) {
-            ownerRepository.deleteById(e.getId());
-        }
-        for (var e : userRepository.findAllOrderById()) {
-            userRepository.delete(e.getId());
-        }
-    }
-
-    private static Owner getOwner(String name) {
-        Owner owner = new Owner();
-        owner.setName(name);
-        owner.setUser(getUser("login" + name));
-        return owner;
-    }
-
-    private static User getUser(String login) {
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword("password");
-        return user;
+        util.clearRepository();
     }
 
     @Test
     public void whenAddOwnerThenFindByIdAndGetThatOwner() {
-        Owner owner = getOwner("Owner 1");
-        ownerRepository.add(owner);
-        var res = ownerRepository.findById(owner.getId()).get();
-        assertThat(res.getName()).isEqualTo(owner.getName());
+        User user1 = util.getUser("User1");
+        Owner owner1 = util.getOwner("Owner 1", user1);
+        util.ownerRepository.add(owner1);
+        var res = util.ownerRepository.findById(owner1.getId()).get();
+        assertThat(res.getName()).isEqualTo(owner1.getName());
     }
 
     @Test
     public void whenUpdateOwnerThenGetUpdated() {
-        Owner owner1 = getOwner("Owner 1");
-        Owner owner2 = getOwner("Owner 2");
-        ownerRepository.add(owner1);
+        User user1 = util.getUser("User1");
+        User user2 = util.getUser("User2");
+        Owner owner1 = util.getOwner("Owner 1", user1);
+        Owner owner2 = util.getOwner("Owner 2", user2);
+        util.ownerRepository.add(owner1);
         owner2.setId(owner1.getId());
-        ownerRepository.update(owner2);
-        Owner res = ownerRepository.findById(owner1.getId()).get();
+        util.ownerRepository.update(owner2);
+        Owner res = util.ownerRepository.findById(owner1.getId()).get();
         assertThat(res.getName()).isEqualTo(owner2.getName());
     }
 
     @Test
     public void whenDeleteByIdThenGetEmpty() {
-        Owner owner = getOwner("Owner 1");
-        ownerRepository.add(owner);
-        assertThat(ownerRepository.findById(owner.getId()).get()).isEqualTo(owner);
-        ownerRepository.deleteById(owner.getId());
-        Optional<Owner> res = ownerRepository.findById(owner.getId());
+        User user1 = util.getUser("User1");
+        Owner owner = util.getOwner("Owner 1", user1);
+        util.ownerRepository.add(owner);
+        assertThat(util.ownerRepository.findById(owner.getId()).get()).isEqualTo(owner);
+        util.ownerRepository.deleteById(owner.getId());
+        Optional<Owner> res = util.ownerRepository.findById(owner.getId());
         assertThat(res).isEqualTo(Optional.empty());
     }
 
     @Test
     public void whenAddTwoOwnersFindAllThenGetTwoOwners() {
-        Owner owner1 = getOwner("Owner 1");
-        Owner owner2 = getOwner("Owner 2");
-        ownerRepository.add(owner1);
-        ownerRepository.add(owner2);
-        var res = ownerRepository.findAll();
+        User user1 = util.getUser("User1");
+        User user2 = util.getUser("User2");
+        Owner owner1 = util.getOwner("Owner 1", user1);
+        Owner owner2 = util.getOwner("Owner 2", user2);
+        util.ownerRepository.add(owner1);
+        util.ownerRepository.add(owner2);
+        var res = util.ownerRepository.findAll();
         assertThat(res).containsExactlyInAnyOrder(owner1, owner2);
     }
 

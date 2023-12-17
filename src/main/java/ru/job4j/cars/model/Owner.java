@@ -24,7 +24,6 @@ public class Owner {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner_id")
+    @OneToMany(mappedBy = "owner")
     private Set<HistoryOwner> historyOwners = new HashSet<>();
 }

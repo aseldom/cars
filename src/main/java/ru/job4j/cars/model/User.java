@@ -22,6 +22,8 @@ public class User {
 
     private String password;
 
+    private String phone;
+
     @ManyToMany
     @JoinTable(name = "participates",
             joinColumns = { @JoinColumn(name = "user_id") },
@@ -29,4 +31,13 @@ public class User {
     )
     private Set<Post> participates = new HashSet<>();
 
+    @Override
+    public String toString() {
+        return "User{"
+                + "id=" + id
+                + ", login='" + login + '\''
+                + ", password='" + password + '\''
+                + ", phone='" + phone + '\''
+                + '}';
+    }
 }

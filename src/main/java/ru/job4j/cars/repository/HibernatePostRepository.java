@@ -2,7 +2,6 @@ package ru.job4j.cars.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-import ru.job4j.cars.model.Car;
 import ru.job4j.cars.model.Post;
 
 import java.sql.Timestamp;
@@ -53,7 +52,7 @@ public class HibernatePostRepository implements PostRepository {
     @Override
     public Collection<Post> findLastDay() {
         Timestamp nowMinusDay = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
-        return crudRepository.query("FROM Post p WHERE p.startTime >= :fNowMinusDay",
+        return crudRepository.query("FROM Post p WHERE p.created >= :fNowMinusDay",
                 Post.class,
                 Map.of("fNowMinusDay", nowMinusDay));
     }
@@ -66,10 +65,4 @@ public class HibernatePostRepository implements PostRepository {
         );
     }
 
-    @Override
-    public Collection<Car> findByModel(String model) {
-        return crudRepository.query("FROM Post p WHERE p.car.name = :fModel",
-                Car.class,
-                Map.of("fModel", model));
-    }
 }

@@ -1,86 +1,116 @@
 package ru.job4j.cars.repository;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import ru.job4j.cars.model.Car;
+import ru.job4j.cars.model.Photo;
 import ru.job4j.cars.model.Post;
 import ru.job4j.cars.model.User;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HibernatePostRepositoryTest {
 
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
-    private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-    private final HibernatePostRepository postRepository = new HibernatePostRepository(new CrudRepository(sf));
-    private final HibernateUserRepository userRepository = new HibernateUserRepository(new CrudRepository(sf));
+    private final Util util = new Util();
 
     @AfterEach
     public void clearRepository() {
-        for (var e : postRepository.findAll()) {
-            postRepository.deleteById(e.getId());
-        }
-        for (var e : userRepository.findAllOrderById()) {
-            userRepository.delete(e.getId());
-        }
-    }
-
-    private static Post getPost(String description) {
-        Post post = new Post();
-        post.setDescription(description);
-        post.setUser(getUser("slogin" + description));
-        return post;
-    }
-
-    private static User getUser(String login) {
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword("password");
-        return user;
+        util.clearRepository();
     }
 
     @Test
     public void whenAddPostThenFindByIdAndGetThatPost() {
-        Post post = getPost("Post 1");
-        postRepository.add(post);
-        var res = postRepository.findById(post.getId()).get();
-        assertThat(res.getDescription()).isEqualTo(post.getDescription());
+        Car car = util.getCar("Car1", "vin1");
+        User user = util.getUser("user1");
+        Post post = util.getPost(car, user, "Post 1");
+        util.postRepository.add(post);
+        var res = util.postRepository.findById(post.getId()).get();
+        assertThat(res).isEqualTo(post);
     }
 
     @Test
     public void whenUpdatePostThenGetUpdated() {
-        Post post1 = getPost("Post 1");
-        Post post2 = getPost("Post 2");
-        postRepository.add(post1);
+        Car car1 = util.getCar("Car1", "vin1");
+        Car car2 = util.getCar("Car2", "vin2");
+        User user1 = util.getUser("user1");
+        User user2 = util.getUser("user2");
+        Post post1 = util.getPost(car1, user1, "Post 1");
+        Post post2 = util.getPost(car2, user2, "Post 2");
+        util.postRepository.add(post1);
         post2.setId(post1.getId());
-        postRepository.update(post2);
-        Post res = postRepository.findById(post1.getId()).get();
-        assertThat(res.getDescription()).isEqualTo(post2.getDescription());
+        util.postRepository.update(post2);
+        Post res = util.postRepository.findById(post1.getId()).get();
+        assertThat(res).isEqualTo(post2);
     }
 
     @Test
     public void whenDeleteByIdThenGetEmpty() {
-        Post post = getPost("Post 1");
-        postRepository.add(post);
-        assertThat(postRepository.findById(post.getId()).get()).isEqualTo(post);
-        postRepository.deleteById(post.getId());
-        Optional<Post> res = postRepository.findById(post.getId());
+        Car car = util.getCar("Car1", "vin1");
+        User user = util.getUser("user1");
+        Post post = util.getPost(car, user, "Post 1");
+        util.postRepository.add(post);
+        assertThat(util.postRepository.findById(post.getId()).get()).isEqualTo(post);
+        util.postRepository.deleteById(post.getId());
+        Optional<Post> res = util.postRepository.findById(post.getId());
         assertThat(res).isEqualTo(Optional.empty());
     }
 
     @Test
     public void whenAddTwoPostsFindAllThenGetTwoPosts() {
-        Post post1 = getPost("Post 1");
-        Post post2 = getPost("Post 2");
-        postRepository.add(post1);
-        postRepository.add(post2);
-        var res = postRepository.findAll();
+        Car car1 = util.getCar("Car1", "vin1");
+        Car car2 = util.getCar("Car2", "vin2");
+        User user1 = util.getUser("user1");
+        User user2 = util.getUser("user2");
+        Post post1 = util.getPost(car1, user1, "Post 1");
+        Post post2 = util.getPost(car2, user2, "Post 2");
+        util.postRepository.add(post1);
+        util.postRepository.add(post2);
+        var res = util.postRepository.findAll();
         assertThat(res).containsExactlyInAnyOrder(post1, post2);
+    }
+
+    @Test
+    public void whenAddPostWithPhotoThenFindPostWithPhotoThenGetIt() {
+        Car car1 = util.getCar("Car1", "vin1");
+        Car car2 = util.getCar("Car2", "vin2");
+        User user1 = util.getUser("user1");
+        User user2 = util.getUser("user2");
+        Photo photo1 = util.getPhoto("photo1", "path1");
+        Post post1 = util.getPost(car1, user1, "Post 1", photo1);
+        Post post2 = util.getPost(car2, user2, "Post 2");
+        util.postRepository.add(post1);
+        util.postRepository.add(post2);
+        var res = util.postRepository.findWithPhoto();
+        assertThat(res).containsExactlyInAnyOrder(post1);
+    }
+
+    @Test
+    public void whenAddThreePostsThenGetPostForLastDay() {
+        Car car1 = util.getCar("Car1", "vin1");
+        Car car2 = util.getCar("Car2", "vin2");
+        Car car3 = util.getCar("Car3", "vin3");
+        User user1 = util.getUser("user1");
+        User user2 = util.getUser("user2");
+        User user3 = util.getUser("user3");
+        Post post1 = util.getPost(car1, user1, "Post 1");
+        Post post2 = util.getPost(car2, user2, "Post 2");
+        Post post3 = util.getPost(car3, user3, "Post 3");
+        post2.setCreated(Timestamp.valueOf(LocalDateTime.now().minusHours(23).minusMinutes(58)));
+        post3.setCreated(Timestamp.valueOf(LocalDateTime.now().minusDays(2)));
+        util.postRepository.add(post1);
+        util.postRepository.add(post2);
+        util.postRepository.add(post3);
+        var res = util.postRepository.findLastDay();
+        assertThat(res).containsExactlyInAnyOrder(post1, post2);
+    }
+
+    @Test
+    public void empty() {
+
     }
 
 }

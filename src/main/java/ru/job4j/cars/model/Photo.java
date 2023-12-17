@@ -19,4 +19,8 @@ public class Photo {
 
     private String path;
 
+    @ManyToOne
+    @JoinColumn(name = "auto_post_id")
+    private Post post;
+
 }

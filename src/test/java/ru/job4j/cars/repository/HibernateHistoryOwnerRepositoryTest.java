@@ -1,111 +1,90 @@
 package ru.job4j.cars.repository;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import ru.job4j.cars.model.*;
+import ru.job4j.cars.model.Car;
+import ru.job4j.cars.model.HistoryOwner;
+import ru.job4j.cars.model.Owner;
+import ru.job4j.cars.model.User;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class HibernateHistoryOwnerRepositoryTest {
 
-    private final StandardServiceRegistry registry = new StandardServiceRegistryBuilder().configure().build();
-    private final SessionFactory sf = new MetadataSources(registry).buildMetadata().buildSessionFactory();
-    private final HistoryOwnerRepository historyOwnerRepository = new HibernateHistoryOwnerRepository(new CrudRepository(sf));
-    private final UserRepository userRepository = new HibernateUserRepository(new CrudRepository(sf));
-    private final CarRepository carRepository = new HibernateCarRepository(new CrudRepository(sf));
-    private final OwnerRepository ownerRepository = new HibernateOwnerRepository(new CrudRepository(sf));
+    private final Util util = new Util();
 
     @AfterEach
-    public void clearHistoryOwnerRepository() {
-        for (HistoryOwner e : historyOwnerRepository.findAll()) {
-            historyOwnerRepository.deleteById(e.getId());
-        }
-        for (Owner e : ownerRepository.findAll()) {
-            ownerRepository.deleteById(e.getId());
-        }
-        for (var e : userRepository.findAllOrderById()) {
-            userRepository.delete(e.getId());
-        }
-    }
-
-    private HistoryOwner getHistoryOwner(String name) {
-        HistoryOwner historyOwner = new HistoryOwner();
-        historyOwner.setOwner(getOwner(name));
-        historyOwner.setCar(getCar("Car 1 " + name));
-        return historyOwner;
-    }
-
-    private Owner getOwner(String name) {
-        Owner owner = new Owner();
-        owner.setName(name);
-        owner.setUser(getUser("login" + name));
-        ownerRepository.add(owner);
-        return owner;
-    }
-
-    private User getUser(String login) {
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword("password");
-        return user;
-    }
-
-    private Car getCar(String name) {
-        Car car = new Car();
-        car.setName(name);
-        car.setEngine(getEngine());
-        carRepository.add(car);
-        return car;
-    }
-
-    private Engine getEngine() {
-        Engine engine = new Engine();
-        engine.setName("Engine 1");
-        return engine;
+    public void clearRepository() {
+        util.clearRepository();
     }
 
     @Test
     public void whenAddThenFindByIdAndGetThatHistoryOwner() {
-        HistoryOwner historyOwner = getHistoryOwner("HistoryOwner 1");
-        historyOwnerRepository.add(historyOwner);
-        HistoryOwner res = historyOwnerRepository.findById(historyOwner.getId()).get();
+        Car car1 = util.getCar("Car 1", "Vin1");
+        User user1 = util.getUser("User1");
+        Owner owner1 = util.getOwner("Owner 1", user1);
+        util.carRepository.add(car1);
+        util.ownerRepository.add(owner1);
+        HistoryOwner historyOwner = util.getHistoryOwner(car1, owner1);
+        util.historyOwnerRepository.add(historyOwner);
+        HistoryOwner res = util.historyOwnerRepository.findById(historyOwner.getId()).get();
         assertThat(res).isEqualTo(historyOwner);
     }
 
     @Test
     public void whenUpdateThenGetUpdated() {
-        HistoryOwner historyOwner1 = getHistoryOwner("HistoryOwner 1");
-        HistoryOwner historyOwner2 = getHistoryOwner("HistoryOwner 2");
-        historyOwnerRepository.add(historyOwner1);
+        Car car1 = util.getCar("Car 1", "Vin1");
+        User user1 = util.getUser("User1");
+        Owner owner1 = util.getOwner("Owner 1", user1);
+        util.carRepository.add(car1);
+        util.ownerRepository.add(owner1);
+        HistoryOwner historyOwner1 = util.getHistoryOwner(car1, owner1);
+        HistoryOwner historyOwner2 = util.getHistoryOwner(car1, owner1);
+        historyOwner2.setStartAt(Timestamp.valueOf(LocalDateTime.now().minusDays(3)));
+        historyOwner2.setEndAt(Timestamp.valueOf(LocalDateTime.now().minusDays(2)));
+        util.historyOwnerRepository.add(historyOwner1);
         historyOwner2.setId(historyOwner1.getId());
-        historyOwnerRepository.update(historyOwner2);
-        HistoryOwner res = historyOwnerRepository.findById(historyOwner1.getId()).get();
+        util.historyOwnerRepository.update(historyOwner2);
+        HistoryOwner res = util.historyOwnerRepository.findById(historyOwner1.getId()).get();
         assertThat(res).isEqualTo(historyOwner2);
     }
 
     @Test
     public void whenDeleteByIdThenGetEmpty() {
-        HistoryOwner historyOwner = getHistoryOwner("HistoryOwner 1");
-        historyOwnerRepository.add(historyOwner);
-        assertThat(historyOwnerRepository.findById(historyOwner.getId()).get()).isEqualTo(historyOwner);
-        historyOwnerRepository.deleteById(historyOwner.getId());
-        Optional<HistoryOwner> res = historyOwnerRepository.findById(historyOwner.getId());
+        Car car1 = util.getCar("Car 1", "Vin1");
+        User user1 = util.getUser("User1");
+        Owner owner1 = util.getOwner("Owner 1", user1);
+        util.carRepository.add(car1);
+        util.ownerRepository.add(owner1);
+        HistoryOwner historyOwner = util.getHistoryOwner(car1, owner1);
+        util.historyOwnerRepository.add(historyOwner);
+        assertThat(util.historyOwnerRepository.findById(historyOwner.getId()).get()).isEqualTo(historyOwner);
+        util.historyOwnerRepository.deleteById(historyOwner.getId());
+        Optional<HistoryOwner> res = util.historyOwnerRepository.findById(historyOwner.getId());
         assertThat(res).isEqualTo(Optional.empty());
     }
 
     @Test
     public void whenAddTwoHistoryOwnersFindAllThenGetTwoHistoryOwners() {
-        HistoryOwner historyOwner1 = getHistoryOwner("HistoryOwner 1");
-        HistoryOwner historyOwner2 = getHistoryOwner("HistoryOwner 2");
-        historyOwnerRepository.add(historyOwner1);
-        historyOwnerRepository.add(historyOwner2);
-        var res = historyOwnerRepository.findAll();
+        Car car1 = util.getCar("Car 1", "Vin1");
+        Car car2 = util.getCar("Car 2", "Vin2");
+        User user1 = util.getUser("User1");
+        User user2 = util.getUser("User2");
+        Owner owner1 = util.getOwner("Owner 1", user1);
+        Owner owner2 = util.getOwner("Owner 2", user2);
+        util.carRepository.add(car1);
+        util.carRepository.add(car2);
+        util.ownerRepository.add(owner1);
+        util.ownerRepository.add(owner2);
+        HistoryOwner historyOwner1 = util.getHistoryOwner(car1, owner1);
+        HistoryOwner historyOwner2 = util.getHistoryOwner(car2, owner2);
+        util.historyOwnerRepository.add(historyOwner1);
+        util.historyOwnerRepository.add(historyOwner2);
+        var res = util.historyOwnerRepository.findAll();
         assertThat(res).containsExactlyInAnyOrder(historyOwner1, historyOwner2);
     }
 

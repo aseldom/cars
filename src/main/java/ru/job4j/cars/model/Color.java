@@ -8,8 +8,8 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "engine")
-public class Engine {
+@Table(name = "color")
+public class Color {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,12 +18,4 @@ public class Engine {
 
     private String name;
 
-    @Column(name = "engine_value")
-    private Double engineValue;
-
-    private Double power;
-
-    @ManyToOne
-    @JoinColumn(name = "engine_type_id")
-    private EngineType engineType;
 }

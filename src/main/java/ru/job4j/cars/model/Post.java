@@ -23,8 +23,7 @@ public class Post {
 
     private String description;
 
-    @Column(name = "start_time")
-    private Timestamp startTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+    private Timestamp created = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "auto_user_id")
@@ -42,4 +41,14 @@ public class Post {
     @JoinColumn(name = "auto_post_id")
     private List<Photo> photos = new ArrayList<>();
 
+    @Override
+    public String toString() {
+        return "Post{"
+                + "id=" + id
+                + ", description='" + description + '\''
+                + ", created=" + created
+                + ", user=" + user
+                + ", car=" + car
+                + '}';
+    }
 }
