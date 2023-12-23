@@ -22,7 +22,7 @@ class HibernateEngineRepositoryTest {
         Engine engine = util.getEngine("Engine 1");
         util.engineRepository.add(engine);
         var res = util.engineRepository.findById(engine.getId()).get();
-        assertThat(res.getName()).isEqualTo(engine.getName());
+        assertThat(res.getNumber()).isEqualTo(engine.getNumber());
     }
 
     @Test
@@ -33,7 +33,7 @@ class HibernateEngineRepositoryTest {
         engine2.setId(engine1.getId());
         util.engineRepository.update(engine2);
         Engine res = util.engineRepository.findById(engine1.getId()).get();
-        assertThat(res.getName()).isEqualTo(engine2.getName());
+        assertThat(res.getNumber()).isEqualTo(engine2.getNumber());
     }
 
     @Test

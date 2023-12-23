@@ -31,7 +31,7 @@ public class HibernatePostRepository implements PostRepository {
     @Override
     public boolean deleteById(int id) {
         int res = crudRepository.runWithConfirm(
-                "DELETE from Post p WHERE p.id = :fId",
+                "DELETE from Post p  WHERE p.id = :fId",
                 Map.of("fId", id)
         );
         return res != 0;
@@ -39,20 +39,20 @@ public class HibernatePostRepository implements PostRepository {
 
     @Override
     public Optional<Post> findById(int id) {
-        return crudRepository.optional("FROM Post p JOIN FETCH p.user WHERE p.id = :fId",
+        return crudRepository.optional("FROM Post p LEFT JOIN FETCH p.priceHistories WHERE p.id = :fId",
                 Post.class,
                 Map.of("fId", id));
     }
 
     @Override
     public Collection<Post> findAll() {
-        return crudRepository.query("FROM Post", Post.class);
+        return crudRepository.query("FROM Post p LEFT JOIN FETCH p.priceHistories", Post.class);
     }
 
     @Override
     public Collection<Post> findLastDay() {
         Timestamp nowMinusDay = Timestamp.valueOf(LocalDateTime.now().minusDays(1));
-        return crudRepository.query("FROM Post p WHERE p.created >= :fNowMinusDay",
+        return crudRepository.query("FROM Post p LEFT JOIN FETCH p.priceHistories WHERE p.created >= :fNowMinusDay",
                 Post.class,
                 Map.of("fNowMinusDay", nowMinusDay));
     }

@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -17,16 +19,24 @@ public class HistoryOwner {
     @EqualsAndHashCode.Include
     private int id;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "car_id")
     private Car car;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id")
     private Owner owner;
 
     private Timestamp startAt;
 
-    private Timestamp endAt;
+    private Timestamp endAt = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS));
 
+    @Override
+    public String toString() {
+        return "HistoryOwner{"
+                + "id=" + id
+                + ", startAt=" + startAt
+                + ", endAt=" + endAt
+                + '}';
+    }
 }

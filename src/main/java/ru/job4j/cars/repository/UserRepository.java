@@ -21,4 +21,6 @@ public interface UserRepository {
 
     Optional<User> findByLogin(String login);
 
+    Optional<User> findByLoginAndPassword(String login, String password);
+
 }

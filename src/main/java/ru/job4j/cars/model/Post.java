@@ -25,19 +25,22 @@ public class Post {
 
     private Timestamp created = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    private boolean sales;
+
+    @ManyToOne()
     @JoinColumn(name = "auto_user_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "car_id")
     private Car car;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "auto_post_id")
-    private List<PriceHistory> histories = new ArrayList<>();
+    private List<PriceHistory> priceHistories = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade =
+            {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     @JoinColumn(name = "auto_post_id")
     private List<Photo> photos = new ArrayList<>();
 
@@ -47,7 +50,7 @@ public class Post {
                 + "id=" + id
                 + ", description='" + description + '\''
                 + ", created=" + created
-                + ", user=" + user
+                + ", user="
                 + ", car=" + car
                 + '}';
     }

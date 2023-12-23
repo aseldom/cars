@@ -2,6 +2,7 @@ package ru.job4j.cars.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -11,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@NoArgsConstructor
 @Table(name = "price_history")
 public class PriceHistory {
 
@@ -26,8 +28,8 @@ public class PriceHistory {
     @Column(name = "created")
     private Timestamp startTime = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
 
-    @ManyToOne
-    @JoinColumn(name = "auto_post_id")
-    private Post post;
-
+    public PriceHistory(Long before, Long after) {
+        this.before = before;
+        this.after = after;
+    }
 }

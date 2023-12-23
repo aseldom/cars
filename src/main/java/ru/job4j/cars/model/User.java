@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -18,24 +16,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    private String login;
+    private String name;
+
+    @Column(name = "login")
+    private String email;
 
     private String password;
 
     private String phone;
 
-    @ManyToMany
-    @JoinTable(name = "participates",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "post_id") }
-    )
-    private Set<Post> participates = new HashSet<>();
-
     @Override
     public String toString() {
         return "User{"
                 + "id=" + id
-                + ", login='" + login + '\''
+                + ", login='" + email + '\''
                 + ", password='" + password + '\''
                 + ", phone='" + phone + '\''
                 + '}';

@@ -19,8 +19,12 @@ public class Photo {
 
     private String path;
 
-    @ManyToOne
-    @JoinColumn(name = "auto_post_id")
-    private Post post;
+    public Photo() {
+    }
+
+    public Photo(String name, String path) {
+        this.name = name;
+        this.path = path;
+    }
 
 }

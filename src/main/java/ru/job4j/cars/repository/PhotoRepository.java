@@ -9,8 +9,6 @@ public interface PhotoRepository {
 
     Optional<Photo> add(Photo photo);
 
-    Optional<Photo> update(Photo photo);
-
     boolean deleteById(int id);
 
     Optional<Photo> findById(int id);

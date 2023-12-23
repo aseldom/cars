@@ -2,12 +2,14 @@ package ru.job4j.cars.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "owners")
@@ -20,10 +22,23 @@ public class Owner {
 
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "owner")
     private Set<HistoryOwner> historyOwners = new HashSet<>();
+
+    public Owner(User user) {
+        this.name = user.getName();
+        this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Owner{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + '}';
+    }
 }

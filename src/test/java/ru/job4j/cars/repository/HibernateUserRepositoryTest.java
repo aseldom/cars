@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class HibernateUserRepositoryTest {
 
@@ -24,18 +23,16 @@ class HibernateUserRepositoryTest {
         User user = util.getUser("User 1");
         util.userRepository.add(user);
         var res = util.userRepository.findById(user.getId()).get();
-        assertThat(res.getLogin()).isEqualTo(user.getLogin());
+        assertThat(res.getEmail()).isEqualTo(user.getEmail());
     }
 
     @Test
-    public void whenAddUserWithSameLoginThenGetException() {
+    public void whenAddUserWithSameLoginThenReturnEmpty() {
         User user1 = util.getUser("User 1");
         User user2 = util.getUser("User 1");
         util.userRepository.add(user1);
-        assertThatThrownBy(() -> util.userRepository.add(user2))
-                .isInstanceOf(javax.persistence.PersistenceException.class)
-                .hasMessageContaining("org.hibernate.exception.ConstraintViolationException:"
-                        + " could not execute statement");
+        var res = util.userRepository.add(user2);
+        assertThat(res).isEqualTo(Optional.empty());
     }
 
     @Test
@@ -46,7 +43,7 @@ class HibernateUserRepositoryTest {
         user2.setId(user1.getId());
         util.userRepository.update(user2);
         User res = util.userRepository.findById(user1.getId()).get();
-        assertThat(res.getLogin()).isEqualTo(user2.getLogin());
+        assertThat(res.getEmail()).isEqualTo(user2.getEmail());
     }
 
     @Test
@@ -73,7 +70,7 @@ class HibernateUserRepositoryTest {
     public void whenDeleteByIdThenGetEmpty() {
         User user = util.getUser("User 1");
         util.userRepository.add(user);
-        assertThat(util.userRepository.findById(user.getId()).get().getLogin()).isEqualTo(user.getLogin());
+        assertThat(util.userRepository.findById(user.getId()).get().getEmail()).isEqualTo(user.getEmail());
         util.userRepository.delete(user.getId());
         Optional<User> res = util.userRepository.findById(user.getId());
         assertThat(res).isEqualTo(Optional.empty());
@@ -83,15 +80,27 @@ class HibernateUserRepositoryTest {
     public void whenFindByLoginThenGetUserWithThatLogin() {
         User user = util.getUser("User 1");
         util.userRepository.add(user);
-        String res = util.userRepository.findByLogin(user.getLogin()).get().getLogin();
-        assertThat(res).isEqualTo(user.getLogin());
+        String res = util.userRepository.findByLogin(user.getEmail()).get().getEmail();
+        assertThat(res).isEqualTo(user.getEmail());
+    }
+
+    @Test
+    public void whenFindByLoginAndPasswordThenGetUserWithThatLoginAndPassword() {
+        User user1 = util.getUser("User 1", "Password 1");
+        User user2 = util.getUser("User 2", "Password 2");
+        util.userRepository.add(user1);
+        util.userRepository.add(user2);
+        String res1 = util.userRepository.findByLoginAndPassword(user1.getEmail(), user1.getPassword()).get().getEmail();
+        String res2 = util.userRepository.findByLoginAndPassword(user2.getEmail(), user2.getPassword()).get().getEmail();
+        assertThat(res1).isEqualTo(user1.getEmail());
+        assertThat(res2).isEqualTo(user2.getEmail());
     }
 
     @Test
     public void whenFindByFakeLoginThenGetEmpty() {
         User user = util.getUser("User 1");
         util.userRepository.add(user);
-        String fakeLogin = user.getLogin() + "fake";
+        String fakeLogin = user.getEmail() + "fake";
         Optional<User> res = util.userRepository.findByLogin(fakeLogin);
         assertThat(res).isEmpty();
     }
@@ -104,11 +113,11 @@ class HibernateUserRepositoryTest {
         util.userRepository.add(user1);
         util.userRepository.add(user2);
         util.userRepository.add(user3);
-        String searchLogin = user1.getLogin().substring(0, 4);
+        String searchLogin = user1.getEmail().substring(0, 4);
         List<User> res = util.userRepository.findByLikeLogin(searchLogin);
         assertThat(res).containsExactly(user1, user2);
-        assertThat(res.get(0).getLogin()).isEqualTo(user1.getLogin());
-        assertThat(res.get(1).getLogin()).isEqualTo(user2.getLogin());
+        assertThat(res.get(0).getEmail()).isEqualTo(user1.getEmail());
+        assertThat(res.get(1).getEmail()).isEqualTo(user2.getEmail());
         assertThat(res.size()).isEqualTo(2);
     }
 
@@ -119,8 +128,8 @@ class HibernateUserRepositoryTest {
         util.userRepository.add(user1);
         util.userRepository.add(user2);
         var res = util.userRepository.findAllOrderById();
-        assertThat(res.get(0).getLogin()).isEqualTo(user1.getLogin());
-        assertThat(res.get(1).getLogin()).isEqualTo(user2.getLogin());
+        assertThat(res.get(0).getEmail()).isEqualTo(user1.getEmail());
+        assertThat(res.get(1).getEmail()).isEqualTo(user2.getEmail());
     }
 
 }

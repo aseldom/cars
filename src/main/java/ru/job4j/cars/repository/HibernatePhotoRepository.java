@@ -21,12 +21,6 @@ public class HibernatePhotoRepository implements PhotoRepository {
     }
 
     @Override
-    public Optional<Photo> update(Photo photo) {
-        crudRepository.run(session -> session.merge(photo));
-        return Optional.of(photo);
-    }
-
-    @Override
     public boolean deleteById(int id) {
         int res = crudRepository.runWithConfirm(
                 "DELETE FROM Photo WHERE id = :fId",

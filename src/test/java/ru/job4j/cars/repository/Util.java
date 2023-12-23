@@ -1,5 +1,6 @@
 package ru.job4j.cars.repository;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -33,45 +34,60 @@ public class Util {
     public final PriceHistoryRepository priceHistoryRepository = new HibernatePriceHistoryRepository(crudRepository);
 
     public void clearRepository() {
-
-        for (var e : historyOwnerRepository.findAll()) {
-            historyOwnerRepository.deleteById(e.getId());
-        }
-
-        for (var e : ownerRepository.findAll()) {
-            ownerRepository.deleteById(e.getId());
-        }
-
-        for (var e : priceHistoryRepository.findAll()) {
-            priceHistoryRepository.deleteById(e.getId());
-        }
-
-        for (var e : photoRepository.findAll()) {
-            photoRepository.deleteById(e.getId());
-        }
-
-        for (var e : postRepository.findAll()) {
-            postRepository.deleteById(e.getId());
-        }
-        for (var e : userRepository.findAllOrderById()) {
-            userRepository.delete(e.getId());
-        }
-
-        for (var e : carRepository.findAll()) {
-            carRepository.deleteById(e.getId());
-        }
-
-        for (var e : engineRepository.findAll()) {
-            engineRepository.deleteById(e.getId());
+        Session session = sf.openSession();
+        try {
+            session.beginTransaction();
+            session.createQuery(
+                            "delete PriceHistory")
+                    .executeUpdate();
+            session.createQuery(
+                            "delete Photo")
+                    .executeUpdate();
+            session.createQuery(
+                            "delete Post")
+                    .executeUpdate();
+            session.createQuery(
+                            "delete HistoryOwner")
+                    .executeUpdate();
+            session.createQuery(
+                            "delete Owner")
+                    .executeUpdate();
+            session.createQuery(
+                            "delete User")
+                    .executeUpdate();
+            session.createQuery(
+                            "delete Car")
+                    .executeUpdate();
+            session.createQuery(
+                            "delete Engine")
+                    .executeUpdate();
+            session.getTransaction().commit();
+            session.close();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
         }
     }
 
     public User getUser(String login) {
         User user = new User();
-        user.setLogin(login);
+        user.setEmail(login);
         user.setPassword("password");
         user.setPhone("1111155555");
         return user;
+    }
+
+    public User getUser(String login, String password) {
+        User user = new User();
+        user.setEmail(login);
+        user.setPassword(password);
+        user.setPhone("1111155555");
+        return user;
+    }
+
+    public Post getPost(String description) {
+        Post post = new Post();
+        post.setDescription(description);
+        return post;
     }
 
     public Post getPost(Car car, User user, String description) {
@@ -85,7 +101,6 @@ public class Util {
     public Post getPost(Car car, User user, String description, Photo photo) {
         Post post = getPost(car, user, description);
         post.getPhotos().add(photo);
-        photo.setPost(post);
         return post;
     }
 
@@ -119,11 +134,18 @@ public class Util {
 
     public Engine getEngine(String name) {
         Engine engine = new Engine();
-        engine.setName(name);
+        engine.setNumber(name);
         engine.setEngineValue(2.5);
         engine.setPower(100.0);
         engine.setEngineType(getEngineType());
         return engine;
+    }
+
+    public HistoryOwner getHistoryOwner() {
+        HistoryOwner historyOwner = new HistoryOwner();
+        historyOwner.setStartAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
+        historyOwner.setEndAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
+        return historyOwner;
     }
 
     public HistoryOwner getHistoryOwner(Car car, Owner owner) {
@@ -133,6 +155,12 @@ public class Util {
         historyOwner.setCar(car);
         historyOwner.setOwner(owner);
         return historyOwner;
+    }
+
+    public Owner getOwner(String name) {
+        Owner owner = new Owner();
+        owner.setName(name);
+        return owner;
     }
 
     public Owner getOwner(String name, User user) {

@@ -37,7 +37,7 @@ public class HibernateCarRepository implements CarRepository {
 
     @Override
     public Optional<Car> findById(int id) {
-        return crudRepository.optional("FROM Car c WHERE c.id = :fId",
+        return crudRepository.optional("FROM Car c LEFT JOIN FETCH c.historyOwners WHERE c.id = :fId",
                 Car.class,
                 Map.of("fId", id)
         );

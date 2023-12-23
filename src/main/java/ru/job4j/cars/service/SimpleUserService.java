@@ -49,4 +49,9 @@ public class SimpleUserService implements UserService {
         return hibernateUserRepository.findByLogin(login);
     }
 
+    @Override
+    public Optional<User> findByLoginAndPassword(String login, String password) {
+        return hibernateUserRepository.findByLoginAndPassword(login, password);
+    }
+
 }

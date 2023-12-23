@@ -7,11 +7,13 @@ import ru.job4j.cars.model.User;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @AllArgsConstructor
 @Repository
 public class HibernateUserRepository implements UserRepository {
 
+    private final static Logger LOGGER = Logger.getLogger(HibernateUserRepository.class.getName());
     private final CrudRepository crudRepository;
 
     /**
@@ -21,8 +23,14 @@ public class HibernateUserRepository implements UserRepository {
      */
     @Override
     public Optional<User> add(User user) {
-        crudRepository.run(session -> session.persist(user));
-        return Optional.of(user);
+        try {
+            crudRepository.run(session -> session.persist(user));
+            return Optional.of(user);
+        } catch (Exception e) {
+            LOGGER.info(e.toString());
+        }
+        return Optional.empty();
+
     }
 
     /**
@@ -94,6 +102,17 @@ public class HibernateUserRepository implements UserRepository {
         return crudRepository.optional(
                 "from User where login = :fLogin", User.class,
                 Map.of("fLogin", login)
+        );
+    }
+
+    @Override
+    public Optional<User> findByLoginAndPassword(String login, String password) {
+        return crudRepository.optional(
+                "from User where login = :fLogin AND password = :fPassword", User.class,
+                Map.of(
+                        "fLogin", login,
+                        "fPassword", password
+                )
         );
     }
 }
