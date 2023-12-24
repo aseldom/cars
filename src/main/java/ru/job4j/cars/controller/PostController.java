@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.job4j.cars.dto.PhotoDto;
 import ru.job4j.cars.dto.PostCreateDto;
+import ru.job4j.cars.model.Post;
 import ru.job4j.cars.model.User;
 import ru.job4j.cars.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
@@ -46,8 +48,7 @@ public class PostController {
     public String addPost(Model model,
                           @ModelAttribute PostCreateDto postCreateDto,
                           @RequestParam MultipartFile file,
-                          HttpServletRequest request
-    ) {
+                          HttpServletRequest request) {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("user");
         try {
@@ -57,7 +58,33 @@ public class PostController {
             model.addAttribute("message", e.getMessage());
             return "errors/404";
         }
+    }
 
+    /*
+    View one post in detail
+     */
+    @GetMapping("/posts/{id}")
+    public String getById(Model model, @PathVariable int id) {
+        Optional<Post> postOptional = postService.findById(id);
+        if (postOptional.isEmpty()) {
+            model.addAttribute("message", "Сообщение с указанным идентификатором не найдено");
+            return "errors/404";
+        }
+        model.addAttribute("post", postOptional.get());
+        return "posts/one";
+    }
+
+    @PostMapping("/posts/{id}")
+    public String setSoldCar(Model model, @PathVariable int id) {
+        Optional<Post> postOptional = postService.findById(id);
+        if (postOptional.isEmpty()) {
+            model.addAttribute("message", "Сообщение с указанным идентификатором не найдено");
+            return "errors/404";
+        }
+        Post post = postOptional.get();
+        post.setSales(true);
+        model.addAttribute("post", postService.update(post).get());
+        return "posts/one";
     }
 
 }

@@ -142,19 +142,19 @@ public class Util {
     }
 
     public HistoryOwner getHistoryOwner() {
-        HistoryOwner historyOwner = new HistoryOwner();
-        historyOwner.setStartAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
-        historyOwner.setEndAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
-        return historyOwner;
+        return HistoryOwner.of()
+                .startAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                .endAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                .build();
     }
 
     public HistoryOwner getHistoryOwner(Car car, Owner owner) {
-        HistoryOwner historyOwner = new HistoryOwner();
-        historyOwner.setStartAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
-        historyOwner.setEndAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)));
-        historyOwner.setCar(car);
-        historyOwner.setOwner(owner);
-        return historyOwner;
+        return HistoryOwner.of()
+                .startAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                .endAt(Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES)))
+                .car(car)
+                .owner(owner)
+                .build();
     }
 
     public Owner getOwner(String name) {

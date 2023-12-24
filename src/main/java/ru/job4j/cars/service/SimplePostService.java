@@ -7,7 +7,7 @@ import ru.job4j.cars.dto.PostCreateDto;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.mapper.PostMapper;
 import ru.job4j.cars.model.*;
-import ru.job4j.cars.repository.HibernatePostRepository;
+import ru.job4j.cars.repository.*;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -17,19 +17,18 @@ import java.util.Optional;
 public class SimplePostService implements PostService {
 
     private final HibernatePostRepository hibernatePostRepository;
+    private final HibernateCarRepository hibernateCarRepository;
+    private final HibernateColorRepository hibernateColorRepository;
+    private final HibernateCarBodyRepository hibernateCarBodyRepository;
+    private final HibernateEngineTypeRepository hibernateEngineTypeRepository;
+    private final HibernateWheelDriveRepository hibernateWheelDriveRepository;
+    private final HibernateTransmissionRepository hibernateTransmissionRepository;
     private final SimplePhotoService simplePhotoService;
-    private final SimpleCarService simpleCarService;
-    private final SimpleColorService simpleColorService;
-    private final SimpleCarBodyService simpleCarBodyService;
-    private final SimpleEngineTypeService simpleEngineTypeService;
-    private final SimpleWheelDriveService simpleWheelDriveService;
-    private final SimpleTransmissionService simpleTransmissionService;
     private final PostMapper postMapper;
 
     @Override
     public Optional<Post> add(PostCreateDto postCreateDto, PhotoDto photoDto, User user) {
         Car car = saveCar(user, postCreateDto).get();
-        car = simpleCarService.findById(car.getId()).get();
         Post post = postMapper.getPostFromPostCreateDto(postCreateDto);
         post.setCar(car);
         post.setUser(user);
@@ -80,14 +79,14 @@ public class SimplePostService implements PostService {
 
     private Optional<Car> saveCar(User user, PostCreateDto postCreateDto) {
         Car car = postMapper.getCarFromPostCreateDto(postCreateDto);
-        car.getEngine().setEngineType(simpleEngineTypeService.findById(postCreateDto.getCarEngineId()).get());
-        car.setColor(simpleColorService.findById(postCreateDto.getCarColorId()).get());
-        car.setCarBody(simpleCarBodyService.findById(postCreateDto.getCarBodyId()).get());
-        car.setWheelDrive(simpleWheelDriveService.findById(postCreateDto.getCarWheelDriveId()).get());
-        car.setTransmission(simpleTransmissionService.findById(postCreateDto.getCarTransmissionId()).get());
+        car.getEngine().setEngineType(hibernateEngineTypeRepository.findById(postCreateDto.getCarEngineId()).get());
+        car.setColor(hibernateColorRepository.findById(postCreateDto.getCarColorId()).get());
+        car.setCarBody(hibernateCarBodyRepository.findById(postCreateDto.getCarBodyId()).get());
+        car.setWheelDrive(hibernateWheelDriveRepository.findById(postCreateDto.getCarWheelDriveId()).get());
+        car.setTransmission(hibernateTransmissionRepository.findById(postCreateDto.getCarTransmissionId()).get());
         HistoryOwner historyOwner = postMapper.getHistoryOwnerFromPostCreateDto(postCreateDto, new Owner(user));
         car.getHistoryOwners().add(historyOwner);
-        return simpleCarService.add(car);
+        return hibernateCarRepository.add(car);
     }
 
 }

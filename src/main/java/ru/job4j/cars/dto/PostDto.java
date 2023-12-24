@@ -5,7 +5,9 @@ import ru.job4j.cars.model.Photo;
 
 import java.util.List;
 
+@Builder(builderMethodName = "of")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
