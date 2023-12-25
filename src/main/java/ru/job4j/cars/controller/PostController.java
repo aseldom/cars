@@ -34,17 +34,17 @@ public class PostController {
         return "posts/list";
     }
 
-    @GetMapping("/posts/create")
+    @GetMapping("/post/create")
     public String getCreatePost(Model model) {
         model.addAttribute("engineTypes", engineTypeService.findAll());
         model.addAttribute("transmissions", transmissionService.findAll());
         model.addAttribute("wheelDrives", wheelDriveService.findAll());
         model.addAttribute("carBodies", carBodyService.findAll());
         model.addAttribute("allColours", colorService.findAll());
-        return "posts/create";
+        return "post/create";
     }
 
-    @PostMapping("/posts/create")
+    @PostMapping("/post/create")
     public String addPost(Model model,
                           @ModelAttribute PostCreateDto postCreateDto,
                           @RequestParam MultipartFile file,

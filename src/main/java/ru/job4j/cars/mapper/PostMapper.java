@@ -2,6 +2,7 @@ package ru.job4j.cars.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import ru.job4j.cars.dto.PostCreateDto;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.model.*;
@@ -9,7 +10,7 @@ import ru.job4j.cars.model.*;
 import java.sql.Timestamp;
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_DEFAULT)
 public interface PostMapper {
 
     @Mapping(source = "car.name", target = "carModel")

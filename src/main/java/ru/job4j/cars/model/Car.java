@@ -50,7 +50,7 @@ public class Car {
     private Engine engine;
 
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
-    private Set<HistoryOwner> historyOwners = new HashSet<>();
+    @Builder.Default private Set<HistoryOwner> historyOwners = new HashSet<>();
 
     @Override
     public String toString() {
