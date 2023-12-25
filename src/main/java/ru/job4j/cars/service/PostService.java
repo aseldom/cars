@@ -10,10 +10,6 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface PostService {
-//
-//    Optional<Post> add(Post post);
-//
-//    Optional<Post> add(Post post, PhotoDto photoDto);
 
     Optional<Post> add(PostCreateDto postCreateDto, PhotoDto photoDto, User user);
 
