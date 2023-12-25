@@ -30,6 +30,9 @@ Java 17, Maven 3.8, PostgreSQL 14, Hibernat-Core 5.6.11, H2 2.1.214, ;
 - Выполнить метод main
 - Открыть веб-браузер по адресу: 127.0.0.1:8080
 
+## Структура данных
+![](/img/Car_table_structure.drawio.png)
+
 ## Screenshot
 - Главная страница
   ![](/img/main_page.png)
