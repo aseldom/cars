@@ -3,7 +3,7 @@ package ru.job4j.cars.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.cars.model.PriceHistory;
-import ru.job4j.cars.repository.HibernatePriceHistoryRepository;
+import ru.job4j.cars.repository.pricehistory.HibernatePriceHistoryRepository;
 
 import java.util.Collection;
 import java.util.Optional;

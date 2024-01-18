@@ -3,7 +3,7 @@ package ru.job4j.cars.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.cars.model.CarBody;
-import ru.job4j.cars.repository.HibernateCarBodyRepository;
+import ru.job4j.cars.repository.carbody.HibernateCarBodyRepository;
 
 import java.util.Collection;
 import java.util.Optional;

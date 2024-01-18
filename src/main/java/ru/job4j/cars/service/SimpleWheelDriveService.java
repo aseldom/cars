@@ -3,7 +3,7 @@ package ru.job4j.cars.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.job4j.cars.model.WheelDrive;
-import ru.job4j.cars.repository.HibernateWheelDriveRepository;
+import ru.job4j.cars.repository.wheeldrive.HibernateWheelDriveRepository;
 
 import java.util.Collection;
 import java.util.Optional;

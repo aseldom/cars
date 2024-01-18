@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.job4j.cars.dto.PhotoDto;
 import ru.job4j.cars.model.Photo;
-import ru.job4j.cars.repository.HibernatePhotoRepository;
+import ru.job4j.cars.repository.photo.HibernatePhotoRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;

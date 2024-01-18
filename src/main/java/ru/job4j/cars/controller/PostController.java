@@ -56,7 +56,7 @@ public class PostController {
             return "redirect:/";
         } catch (IOException e) {
             model.addAttribute("message", e.getMessage());
-            return "errors/404";
+            return "errors/500";
         }
     }
 

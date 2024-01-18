@@ -7,7 +7,13 @@ import ru.job4j.cars.dto.PostCreateDto;
 import ru.job4j.cars.dto.PostDto;
 import ru.job4j.cars.mapper.PostMapper;
 import ru.job4j.cars.model.*;
-import ru.job4j.cars.repository.*;
+import ru.job4j.cars.repository.car.HibernateCarRepository;
+import ru.job4j.cars.repository.carbody.HibernateCarBodyRepository;
+import ru.job4j.cars.repository.color.HibernateColorRepository;
+import ru.job4j.cars.repository.enginetype.HibernateEngineTypeRepository;
+import ru.job4j.cars.repository.post.HibernatePostRepository;
+import ru.job4j.cars.repository.transmission.HibernateTransmissionRepository;
+import ru.job4j.cars.repository.wheeldrive.HibernateWheelDriveRepository;
 
 import java.util.Collection;
 import java.util.Optional;
