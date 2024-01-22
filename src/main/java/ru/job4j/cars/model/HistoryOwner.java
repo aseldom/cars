@@ -12,6 +12,7 @@ import java.time.temporal.ChronoUnit;
 @AllArgsConstructor
 @Builder(builderMethodName = "of")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"car", "owner"})
 @Entity
 @Table(name = "history_owner")
 public class HistoryOwner {
@@ -33,12 +34,4 @@ public class HistoryOwner {
 
     private Timestamp endAt = Timestamp.valueOf(LocalDateTime.now().truncatedTo(ChronoUnit.DAYS));
 
-    @Override
-    public String toString() {
-        return "HistoryOwner{"
-                + "id=" + id
-                + ", startAt=" + startAt
-                + ", endAt=" + endAt
-                + '}';
-    }
 }

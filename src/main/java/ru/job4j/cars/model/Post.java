@@ -2,6 +2,7 @@ package ru.job4j.cars.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"sales", "priceHistories", "photos"})
 @Entity
 @Table(name = "auto_post")
 public class Post {
@@ -37,21 +39,11 @@ public class Post {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "auto_post_id")
-        private List<PriceHistory> priceHistories = new ArrayList<>();
+    private List<PriceHistory> priceHistories = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.EAGER, cascade =
             {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.REMOVE})
     @JoinColumn(name = "auto_post_id")
     private List<Photo> photos = new ArrayList<>();
 
-    @Override
-    public String toString() {
-        return "Post{"
-                + "id=" + id
-                + ", description='" + description + '\''
-                + ", created=" + created
-                + ", user="
-                + ", car=" + car
-                + '}';
-    }
 }

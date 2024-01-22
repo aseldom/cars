@@ -11,6 +11,7 @@ import java.util.Set;
 @Data
 @Builder(builderMethodName = "of")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"historyOwners"})
 @Entity
 @Table(name = "car")
 public class Car {
@@ -52,19 +53,4 @@ public class Car {
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
     @Builder.Default private Set<HistoryOwner> historyOwners = new HashSet<>();
 
-    @Override
-    public String toString() {
-        return "Car{"
-                + "id=" + id
-                + ", name='" + name + '\''
-                + ", vin='" + vin + '\''
-                + ", productionYear=" + productionYear
-                + ", mileage=" + mileage
-                + ", color=" + color
-                + ", transmission=" + transmission
-                + ", wheelDrive=" + wheelDrive
-                + ", carBody=" + carBody
-                + ", engine=" + engine
-                + '}';
-    }
 }

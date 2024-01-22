@@ -3,6 +3,7 @@ package ru.job4j.cars.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"user", "historyOwners"})
 @Entity
 @Table(name = "owners")
 public class Owner {
@@ -34,11 +36,4 @@ public class Owner {
         this.user = user;
     }
 
-    @Override
-    public String toString() {
-        return "Owner{"
-                + "id=" + id
-                + ", name='" + name + '\''
-                + '}';
-    }
 }

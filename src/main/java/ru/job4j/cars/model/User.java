@@ -2,11 +2,13 @@ package ru.job4j.cars.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString(exclude = {"name"})
 @Entity
 @Table(name = "auto_user")
 public class User {
@@ -25,13 +27,4 @@ public class User {
 
     private String phone;
 
-    @Override
-    public String toString() {
-        return "User{"
-                + "id=" + id
-                + ", login='" + email + '\''
-                + ", password='" + password + '\''
-                + ", phone='" + phone + '\''
-                + '}';
-    }
 }
